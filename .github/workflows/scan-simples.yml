@@ -12,7 +12,6 @@ jobs:
       - name: Run Simple Scan
         uses: aquasecurity/trivy-action@master
         with:
-          format: "table"
           severity: "CRITICAL,HIGH,MEDIUM"
           ignore-unfixed: true
           scan-type: "fs"
