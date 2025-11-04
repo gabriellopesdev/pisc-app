@@ -8,27 +8,25 @@ on:
 permissions:
   contents: read
 jobs:
-  scan:
+  build:
     permissions:
       contents: read
       security-events: write
       actions: read
-    runs-on: ubuntu-latest
-    name: Trivy Scan
+    name: Build
+    runs-on: "ubuntu-20.04"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         with:
           scan-type: "fs"
-          ignore-unfixed: true
-          format: "sarif"
-          output: "trivy-results.sarif"
           scan-ref: "."
-          github-pat: ${{ secrets.GITHUB_TOKEN }}
-          severity: "CRITICAL,HIGH"
+          format: "template"
+          template: "@/contrib/sarif.tpl"
+          output: "trivy-results.sarif"
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
